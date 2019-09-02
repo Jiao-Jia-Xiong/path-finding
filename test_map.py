@@ -11,3 +11,9 @@ class TestMap(unittest.TestCase):
         self.assertEqual(100, len(self.map.nodes[0]))
         self.assertEqual((9, 9), self.map[9, 9].loc)
         self.assertEqual((0, 0), self.map[0, 0].loc)
+
+
+if __name__ == '__main__':
+
+    pass
+

@@ -1,22 +1,61 @@
 """This is the implementation for <Map>"""
 from __future__ import annotations
-from typing import List, Tuple
-from numpy import array
-from node import Node
+from typing import List, Tuple, Optional
+
+"""Implementation for Node class"""
+
+
+class Node:
+    """A <Node> class should have at least three other nodes or maximum 8 other
+    nodes connect to it from different directions. A <Node> instance can either
+    work like a barrier or a path
+    """
+    left: Optional[Node]
+    up: Optional[Node]
+    right: Optional[Node]
+    down: Optional[Node]
+    lu: Optional[Node]
+    ru: Optional[Node]
+    rd: Optional[Node]
+    ld: Optional[Node]
+    can_pass: bool
+    loc: Tuple[int, int]
+
+    def __init__(self, loc: Tuple[int, int], can_pass: bool = True) -> None:
+        """Initializa a <Node> instance whose can_pass attrubute is set as
+        requested. Otherwise, set it to True by default.
+        """
+        self.can_pass = can_pass
+        self.left = None
+        self.up = None
+        self.right = None
+        self.down = None
+        self.lu = None
+        self.ru = None
+        self.rd = None
+        self.ld = None
+        self.loc = loc
 
 
 class Map:
     """A <Map> object is consisted of many <Node> instances
 
     === Attributes ===
-    Nodes:
+    nodes:
         A list of list of nodes. Each nested list represents a column of nodes
         on a map. The first nested list represents the first column, the second
         represents the second column,....
+    barriers:
+        This is a list of tuples that indicates which nodes are supposed to be
+        barriers when a map is being initilized.
+    size:
+        A tuple that indicates the size of a map
     """
-    Nodes: array
+    nodes: List[List[Node]]
+    barriers: Optional[List[Tuple]]
 
-    def __init__(self, size: Tuple[int, int]) -> None:
+    def __init__(self, size: Tuple[int, int],
+                 barriers: Optional[List[Tuple[int, int]]] = None) -> None:
         """Create certain amount of nodes based on the size given. After nodes
         are created, nodes should be connected in their right order.
 
@@ -34,17 +73,34 @@ class Map:
              its <rd> node should have (x + 1, y + 1) as position parameters.
              its <ld> node should have (x - 1, y + 1) as position parameters.
         """
-        pass
+        self.barriers = barriers
+        self.size = size
+        self.nodes = self._generate_nodes_lists()
 
     def __getitem__(self, item: Tuple[int, int]) -> Node:
         """return node at position <item> on a map"""
-        pass
+        return self.nodes[item[0]][item[1]]
 
-    def _generate_nodes_array(self) -> array:
+    def _generate_nodes_lists(self) -> List[List[Node]]:
         """This helper method generates as many nodes as required in size.
         Each node in created array is not connected to any other nodes
         """
-        pass
+        columns = []
+        if self.barriers is None:
+            for x in range(self.size[0]):
+                column = []
+                for y in range(self.size[1]):
+                    column.append(Node((x, y)))
+                columns.append(column)
+        else:
+            for x in range(self.size[0]):
+                column = []
+                for y in range(self.size[1]):
+                    if (x, y) in self.barriers:
+                        column.append(Node((x, y), False))
+                    else:
+                        column.append(Node((x, y)))
+        return columns
 
     def _connect_left_nodes(self) -> None:
         """This helper method connects each node's left node if available
@@ -85,3 +141,10 @@ class Map:
         """This helper method connects each node's ld node if available
         """
         pass
+
+
+if __name__ == '__main__':
+
+    node_map = Map((10, 10))
+    print(node_map[9, 9].loc)
+
