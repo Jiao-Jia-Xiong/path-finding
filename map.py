@@ -100,6 +100,7 @@ class Map:
                         column.append(Node((x, y), False))
                     else:
                         column.append(Node((x, y)))
+                columns.append(column)
         return columns
 
     def _connect_left_nodes(self) -> None:
@@ -142,9 +143,4 @@ class Map:
         """
         pass
 
-
-if __name__ == '__main__':
-
-    node_map = Map((10, 10))
-    print(node_map[9, 9].loc)
 
