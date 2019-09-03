@@ -76,6 +76,15 @@ class Map:
         self.barriers = barriers
         self.size = size
         self.nodes = self._generate_nodes_lists()
+        self._connect_left_nodes()
+        self._connect_right_nodes()
+        self._connect_up_nodes()
+        self._connect_down_nodes()
+
+        self._connect_ld_nodes()
+        self._connect_lu_nodes()
+        self._connect_rd_nodes()
+        self._connect_ru_nodes()
 
     def __getitem__(self, item: Tuple[int, int]) -> Node:
         """return node at position <item> on a map"""
@@ -106,41 +115,59 @@ class Map:
     def _connect_left_nodes(self) -> None:
         """This helper method connects each node's left node if available
         """
-        pass
+        for x in reversed(range(1, len(self.nodes))):
+            for y in range(len(self.nodes[x])):
+                self[x, y].left = self[x - 1, y]
 
     def _connect_right_nodes(self) -> None:
         """This helper method connects each node's right node if available
         """
-        pass
+        for x in range(len(self.nodes) - 1):
+            for y in range(len(self.nodes[x])):
+                self[x, y].right = self[x + 1, y]
 
     def _connect_up_nodes(self) -> None:
         """This helper method connects each node's up node if available
         """
-        pass
+        for column in self.nodes:
+            for i in reversed(range(1, len(column))):
+                column[i].up = column[i - 1]
 
     def _connect_down_nodes(self) -> None:
         """This helper method connects each node's down node if available
         """
-        pass
+        for column in self.nodes:
+            for i in range(len(column) - 1):
+                column[i].down = column[i + 1]
 
     def _connect_lu_nodes(self) -> None:
         """This helper method connects each node's lu node if available
         """
-        pass
+        for x in range(len(self.nodes)):
+            for y in range(len(self.nodes[x])):
+                if x - 1 >= 0 and y - 1 >= 0:
+                    self[x, y].lu = self[x - 1, y - 1]
 
     def _connect_ru_nodes(self) -> None:
         """This helper method connects each node's ru node if available
         """
-        pass
+        for x in range(len(self.nodes)):
+            for y in range(len(self.nodes[x])):
+                if x + 1 < self.size[0] and y - 1 >= 0:
+                    self[x, y].ru = self[x + 1, y - 1]
 
     def _connect_rd_nodes(self) -> None:
         """This helper method connects each node's rd node if available
         """
-        pass
+        for x in range(len(self.nodes)):
+            for y in range(len(self.nodes[x])):
+                if x + 1 < self.size[0] and y + 1 < self.size[1]:
+                    self[x, y].rd = self[x + 1, y + 1]
 
     def _connect_ld_nodes(self) -> None:
         """This helper method connects each node's ld node if available
         """
-        pass
-
-
+        for x in range(len(self.nodes)):
+            for y in range(len(self.nodes[x])):
+                if x - 1 >= 0 and y + 1 < self.size[1]:
+                    self[x, y].ld = self[x - 1, y + 1]
